@@ -56,7 +56,7 @@ private val guardHistory = eventsByDay.groupBy { it.guardId }
 
 /**
  * Checks if on a given day the guard has already fallen asleep
-  */
+ */
 private fun asleepAtMidnight(date: GuardDate): Boolean {
     // Determine whether awake from 23:59 the previous night
     val beforeMidnight = date.events.takeWhile { it.dateTime.hour == 23 }
@@ -167,7 +167,7 @@ private fun first(): Int {
 /**
  * Returns the ID of the guard who sleeps most on a particular minute multiplied by that minute of the midnight hour
  */
-private fun second() : Int {
+private fun second(): Int {
     val sleepiestGuardMinute = guardHistory.keys.map { guard -> Pair(guard, sleepiestMinute(guardHistory[guard]!!)) }
         .maxBy { it.second.second }
     return sleepiestGuardMinute!!.first * sleepiestGuardMinute!!.second!!.first
