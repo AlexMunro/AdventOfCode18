@@ -8,16 +8,22 @@ import java.io.File
 
 const val dir = "input"
 
-fun importDataStr(day: Int): List<String>{
-
+fun importDataStr(day: Int): List<String> {
     val file = File("$dir/$day")
     return file.readLines()
-
 }
 
-fun importDataInt(day: Int): List<Int>{
-
+fun importDataInt(day: Int): List<Int> {
     val file = File("$dir/$day")
-    return file.readLines().map{it.toInt()}
+    return file.readLines().map { it.toInt() }
+}
 
+fun importDataSingleStr(day: Int): String {
+    val file = File("$dir/$day")
+    return file.readText()
+}
+
+fun importDataSingleInt(day: Int): Int {
+    val file = File("$dir/$day")
+    return file.readText().toInt()
 }
