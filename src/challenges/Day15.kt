@@ -39,7 +39,7 @@ class Warrior(val health: Int, private val attack: Int, x: Int, y: Int, val type
 
 typealias GameMap = MutableList<MutableList<Location>>
 
-fun initialGameMap(): GameMap {
+fun initialGameMap(elfAttack: Int): GameMap {
     val input = importDataStr(15)
     
     return (0 until input.size).map { y ->
@@ -48,7 +48,7 @@ fun initialGameMap(): GameMap {
                 '#' -> Wall(x, y)
                 '.' -> EmptySpace(x, y)
                 'G' -> Warrior(200, 3, x, y, Warrior.CharacterType.GOBLIN)
-                'E' -> Warrior(200, 3, x, y, Warrior.CharacterType.ELF)
+                'E' -> Warrior(200, elfAttack, x, y, Warrior.CharacterType.ELF)
                 else -> throw Exception("Invalid character ${input[y][x]}")
             }
         }.toMutableList()
@@ -118,11 +118,11 @@ fun findPath(start: Warrior, end: EmptySpace, map: GameMap): Pair<EmptySpace?, I
     }
     return Pair(null, Int.MAX_VALUE)
 }
-    
-data class Outcome(val length: Int, val remainingHealth: Int)
 
-fun battle(): Outcome {
-    val map = initialGameMap()
+data class Outcome(val length: Int, val remainingHealth: Int, val map: GameMap)
+
+fun battle(elfAttack: Int = 3): Outcome {
+    val map = initialGameMap(elfAttack)
     var turnCount = 0
 
     while (true) {
@@ -137,7 +137,7 @@ fun battle(): Outcome {
                     continue
 
                 if (battleWon(currentChar, map))
-                    return Outcome(turnCount, map.flatten().filterIsInstance<Warrior>().sumBy { it.health })   
+                    return Outcome(turnCount, map.flatten().filterIsInstance<Warrior>().sumBy { it.health }, map)
                 
                 val target = selectMeleeTarget(currentChar, locationsInRange(currentChar, map))
 
@@ -162,14 +162,27 @@ fun battle(): Outcome {
         
 }
 
+fun elvesRemaining(map: GameMap): Int {
+    return map.sumBy{ row -> row.sumBy{ if (it is Warrior && it.type == Warrior.CharacterType.ELF) 1 else 0 } }
+}
+
 private fun first(): Int {
     val outcome = battle()
     println("${outcome.length} * ${outcome.remainingHealth}")
     return outcome.length * outcome.remainingHealth
 }
 
-private fun second() {
-
+private fun second(): Int {
+    val initialElfCount = elvesRemaining(initialGameMap(3))
+    
+    generateSequence(4, Int::inc).forEach{
+        val outcome = battle(it)
+        if (elvesRemaining(outcome.map) == initialElfCount){
+            println("${outcome.length} * ${outcome.remainingHealth}")
+            return outcome.length * outcome.remainingHealth
+        }
+    }
+    throw Exception("uh oh")
 }
 
 fun main(args: Array<String>) {
