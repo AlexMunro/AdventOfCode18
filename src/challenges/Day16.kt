@@ -1,11 +1,12 @@
 package challenges
 
 import utils.importDataStr
+import java.lang.IndexOutOfBoundsException
 
 private val input = importDataStr(16)
 
 
-data class DataSample(val opCode: Int, val a: Int, val b: Int, val c: Int, val r1: List<Int>, val r2: List<Int>)
+data class DataSample(val a: Int, val b: Int, val c: Int, val r1: Array<Int>, val r2: Array<Int>)
 
 private val dataSamples: List<DataSample> = {
     var i = 0
@@ -13,92 +14,72 @@ private val dataSamples: List<DataSample> = {
     
     while(input[i].startsWith("Before: ")){
         
-        fun getArray(line: String): List<Int> {
+        fun getArray(line: String): Array<Int> {
             return Regex("""\[((?:\d+, )*\d+)\]""")
                 .find(line)!!.groupValues[1]
                 .split(", ")    
                 .map{ it.toInt() }
+                .toTypedArray()
         }
         
         val r1 = getArray(input[i])
         i++
         
-        val (opCode, a, b, c) = input[i].split(" ").map{ it.toInt() }
+        val (_, a, b, c) = input[i].split(" ").map{ it.toInt() }
         i++
         
         val r2 = getArray(input[i])
         i += 2
         
-        samples.add(DataSample(opCode, a, b, c, r1, r2))
+        samples.add(DataSample(a, b, c, r1, r2))
     }
     
     samples
 }()
 
-fun invalidIndices(xs: List<Any>, vararg i: Int): Boolean {
-    return i.any { xs.size < it }
-}
+typealias OpCode = (Int, Int, Int, Array<Int>) -> Array<Int>
 
-
-val opCodes: List<(DataSample) -> Boolean> = listOf(
+val opCodes: Map<String, OpCode> = mapOf(
 
     // Addition
-
-    // addr
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, b, c)) false else r1[a] + r1[b] == r2[c] },
-    // addi
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, c)) false else r1[a] + b == r2[c] },
-
-    // Multiplication
-
-    // mulr
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, b, c)) false else r1[a] * r1[b] == r2[c]},
-    // muli
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, c)) false else r1[a] * b == r2[c]},
-
+    "addr" to { a, b, c, r -> r.clone().also { it[c] = r[a] + r[b] } },
+    "addi" to { a, b, c, r -> r.clone().also { it[c] = r[a] + b } },
+            
+    // Multiplication 
+    "mulr" to { a, b, c, r -> r.clone().also{ it[c] = r[a] * r[b] } },
+    "muli" to { a, b, c, r -> r.clone().also{ it[c] = r[a] * b } },
+    
     // Bitwise AND
+    "banr" to { a, b, c, r -> r.clone().also{ it[c] = r[a] and r[b] } },
+    "bani" to { a, b, c, r -> r.clone().also{ it[c] = r[a] and b } },
     
-    // banr
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, b, c)) false else r1[a] and r1[b] == r2[c]},
-    // bani
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, c)) false else r1[a] and b == r2[c]},
-
     // Bitwise OR
-    
-    // borr
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, b, c)) false else r1[a] or r1[b] == r2[c]},
-    // bori
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, c)) false else r1[a] or b == r2[c]},
+    "borr" to { a, b, c, r -> r.clone().also{ it[c] = r[a] or r[b] } },
+    "bori" to { a, b, c, r -> r.clone().also{ it[c] = r[a] or b } },
 
     // Assignment
-    
-    // setr
-    { (_, a, _, c, r1, r2) -> if (invalidIndices(r1, a, c)) false else r1[a] == r2[c]},
-    // seti
-    { (_, a, _, c, _, r2) -> if (invalidIndices(r2, c)) false else a == r2[c]},
+    "setr" to { a, _, c, r -> r.clone().also{ it[c] = r[a] } },
+    "seti" to { a, _, c, r -> r.clone().also{ it[c] = a } },
 
     // Greater-than testing
     
-    // gtir
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, b, c)) false else (if (a > r1[b]) r2[c] == 1 else r2[c] == 0) },
-    // gtri
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, c)) false else (if (r1[a] > b) r2[c] == 1 else r2[c] == 0) },
-    // gtrr
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, b, c)) false else (if (r1[a] > r1[b] ) r2[c] == 1 else r2[c] == 0) },
+    "gtir" to { a, b, c, r -> r.clone().also{ it[c] = if (a > r[b]) 1 else 0 } },
+    "gtri" to { a, b, c, r -> r.clone().also{ it[c] = if (r[a] > b) 1 else 0 } },
+    "gtrr" to { a, b, c, r -> r.clone().also {it[c] = if (r[a] > r[b]) 1 else 0 } },
 
     // Equality testing
-
-    // eqir
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, b, c)) false else (if (a == r1[b]) r2[c] == 1 else r2[c] == 0) },
-    // eqri
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, c)) false else (if (r1[a] == b) r2[c] == 1 else r2[c] == 0) },
-    // eqrr
-    { (_, a, b, c, r1, r2) -> if (invalidIndices(r1, a, b, c)) false else (if (r1[a] == r1[b] ) r2[c] == 1 else r2[c] == 0) }
+    "eqir" to { a, b, c, r -> r.clone().also{ it[c] = if (a == r[b]) 1 else 0 } },
+    "eqri" to { a, b, c, r -> r.clone().also{ it[c] = if (r[a] == b) 1 else 0 } },
+    "eqrr" to { a, b, c, r -> r.clone().also{ it[c] = if (r[a] == r[b]) 1 else 0 } }
 )
 
 private fun first(): Int {
-    return dataSamples
-        .count{ sample -> (opCodes.count { it.invoke(sample) } >= 3) }
+    return dataSamples.count{ (a, b, c, r1, r2) -> 
+        opCodes.count { 
+            try { it.value.invoke(a, b, c, r1).contentEquals(r2) } 
+            catch (e: IndexOutOfBoundsException) { false }
+        } >= 3
+    }
 }
 
 private fun second() {
