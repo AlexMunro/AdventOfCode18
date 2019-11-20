@@ -3,5 +3,11 @@
 /out
 *.iml
 
+# JUnit 5 libraries
+/lib
+
 # Ignoring input - get your own at https://adventofcode.com/
 /input
+
+# Output generated directly during the problems
+/output

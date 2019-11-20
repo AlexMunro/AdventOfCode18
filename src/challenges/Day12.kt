@@ -15,7 +15,7 @@ private val input = importDataStr(12)
 /**
  * Store
  */
-val initialState: Set<Long> = {
+private val initialState: Set<Long> = {
     val stringRep = input[0].drop("initial state: ".length)
     (0 until stringRep.length).filter { stringRep[it] == '#' }.map { it.toLong() }.toSet()
 }()
