@@ -1,6 +1,8 @@
 package challenges
 
 import utils.importDataStr
+import java.lang.Math.floor
+import kotlin.math.sqrt
 
 // Uses the value operations from Day16
 
@@ -14,6 +16,7 @@ private tailrec fun executeWithInstrReg(registers: Array<Int>): Array<Int>{
     if (registers[instrReg] >= instructionSet.size) return registers
     
     val instruction = instructionSet[registers[instrReg]]
+    
     val fn: Operation = operations[instruction[1]]!!
     val (a, b, c) = instruction.subList(2, 5).map{ it.toInt() }
     
@@ -25,7 +28,11 @@ private fun first(): Int {
 }
 
 private fun second(): Int {
-    return executeWithInstrReg(arrayOf(1,0,0,0,0,0))[0]
+    // Unfortunately, this one is specific to the input provided. Sorry.
+    // It was obtained by reverse engineering the bytecode given,
+    // discovering the problem it was trying to solve, and optimising.
+    val b = 10_551_370
+    return (1..b).filter{ b % it == 0 }.sum()
 }
 
 fun main(args: Array<String>) {
