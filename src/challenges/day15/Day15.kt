@@ -1,4 +1,4 @@
-package challenges
+package challenges.day15
 
 import utils.importDataStr
 import java.lang.Exception
@@ -185,7 +185,7 @@ private fun second(): Int {
     throw Exception("uh oh")
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
 }

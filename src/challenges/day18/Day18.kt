@@ -1,4 +1,4 @@
-package challenges
+package challenges.day18
 
 import utils.importDataStr
 import utils.repeat
@@ -68,7 +68,7 @@ private fun second(): Int {
     return finalState[TREE]!! * finalState[LUMBERYARD]!!
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
 }

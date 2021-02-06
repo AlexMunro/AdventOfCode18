@@ -1,4 +1,4 @@
-package challenges
+package challenges.day04
 
 import utils.importDataStr
 import java.time.LocalDate
@@ -173,7 +173,7 @@ private fun second(): Int {
     return sleepiestGuardMinute!!.first * sleepiestGuardMinute!!.second!!.first
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
 }

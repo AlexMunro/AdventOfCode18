@@ -1,4 +1,4 @@
-package challenges
+package challenges.day16
 
 import utils.importDataStr
 import java.lang.IndexOutOfBoundsException
@@ -137,7 +137,7 @@ private fun second(): Int {
     return execute(arrayOf(0, 0, 0, 0))[0]
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
 }

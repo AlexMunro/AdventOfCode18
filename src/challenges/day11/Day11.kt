@@ -1,4 +1,4 @@
-package challenges
+package challenges.day11
 
 import utils.importDataSingleInt
 
@@ -74,7 +74,7 @@ private fun second(): Triple<Int, Int, Int> {
 
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
 }

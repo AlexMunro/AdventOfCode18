@@ -1,4 +1,4 @@
-package challenges
+package challenges.day13
 
 import utils.importDataStr
 
@@ -242,7 +242,7 @@ private fun second(): Pair<Int, Int> {
     return lastCarLoc(initialCarts)
 }
 
-fun main(args: Array<String>) {
+fun main() {
 
     println("First solution: ${first()}")
     println("Second solution: ${second()}")

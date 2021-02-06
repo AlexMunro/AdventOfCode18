@@ -1,4 +1,4 @@
-package challenges
+package challepnges.day17
 
 import utils.importDataStr
 import java.awt.Color
@@ -149,7 +149,7 @@ private fun second(): Int {
     return waterPositions().second.size
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
 }

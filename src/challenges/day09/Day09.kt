@@ -1,4 +1,4 @@
-package challenges
+package challenges.day09
 
 import utils.doublyLinkedListOf
 import utils.importDataStr
@@ -47,7 +47,7 @@ private fun second() : Long {
 }
 
 
-fun main(args: Array<String>) {
+fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
 }

@@ -1,4 +1,4 @@
-package challenges
+package challenges.day10
 
 import utils.importDataSingleStr
 
@@ -78,7 +78,7 @@ private fun second(): Int {
     return convergencePoint(starData, starData, Int.MAX_VALUE, 0).second
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
 }

@@ -1,4 +1,4 @@
-package challenges
+package challenges.day12
 
 import utils.importDataStr
 import utils.longVariance
@@ -85,7 +85,7 @@ private fun second(): Long {
     return sumPlantPotsShortcut(initialState, 50_000_000_000L)
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
     println(measureTimeMillis{ second() })

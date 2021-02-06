@@ -1,4 +1,4 @@
-package challenges
+package challenges.day02
 
 import utils.importDataStr
 
@@ -67,7 +67,7 @@ private fun second(): String{
     throw Exception("No two strings from the input have a Hamming distance of 1.")
 }
 
-fun main(args: Array<String>){
+fun main(){
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
 }

@@ -1,4 +1,4 @@
-package challenges
+package challenges.day07
 
 import utils.importDataStr
 
@@ -88,7 +88,7 @@ private fun second() : Int {
 
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
 }

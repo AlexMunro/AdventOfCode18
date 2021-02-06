@@ -1,4 +1,4 @@
-package challenges
+package challenges.day05
 
 import utils.importDataStr
 import java.util.*
@@ -42,7 +42,7 @@ private fun second(): Int {
     }.min()!!
 }
 
-fun main(args: Array<String>) {
+fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
 }
