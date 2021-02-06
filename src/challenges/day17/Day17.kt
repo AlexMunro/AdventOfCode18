@@ -4,7 +4,6 @@ import utils.importDataStr
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.File
-import java.lang.Exception
 import javax.imageio.ImageIO
 
 /**
@@ -30,12 +29,12 @@ private val clayPositions: Set<Pair<Int, Int>> =
         }
     }.toSet()
 
-private val minX = clayPositions.minBy { it.first }!!.first - 1
-private val maxX = clayPositions.maxBy { it.first }!!.first + 1
-private val minY = clayPositions.minBy { it.second }!!.second
-private val maxY = clayPositions.maxBy { it.second }!!.second
+val minX = clayPositions.minByOrNull { it.first }!!.first - 1
+val maxX = clayPositions.maxByOrNull { it.first }!!.first + 1
+val minY = clayPositions.minByOrNull { it.second }!!.second
+val maxY = clayPositions.maxByOrNull { it.second }!!.second
 
-private fun visualise(
+fun visualise(
     clayPositions: Set<Pair<Int, Int>>,
     waterPositions: Set<Pair<Int, Int>>,
     settledWater: Set<Pair<Int, Int>>,

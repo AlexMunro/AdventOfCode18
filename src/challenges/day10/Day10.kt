@@ -46,7 +46,8 @@ tailrec fun convergencePoint(
 
 fun printStars(stars: StarData) {
     val xOrder = orderX(stars.distinctBy { it.first }) // Distinct position makes it easier to print from this list
-    val yOrder = orderY(xOrder) // Taking advantage of stable sorts in Kotlin (undocumented behaviour, this may age poorly)
+    val yOrder =
+        orderY(xOrder) // Taking advantage of stable sorts in Kotlin (undocumented behaviour, this may age poorly)
     val minX = xOrder.first().first.first
     val maxX = xOrder.last().first.first
     val minY = yOrder.first().first.second

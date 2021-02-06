@@ -43,8 +43,7 @@ class Node(representation: List<Int>) {
     fun value(): Int {
         return if (children.isEmpty()) {
             metadata.sum()
-        }
-        else {
+        } else {
             // metadata is one-indexed smh
             metadata.map { (children.getOrNull(it - 1)?.value()) ?: 0 }.sum()
         }

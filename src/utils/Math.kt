@@ -6,11 +6,11 @@ fun variance(vals: Collection<Int>): Double {
     return vals.map { it - (vals.average()) }.sum() / vals.size
 }
 
-fun longVariance(vals: Collection<Long>) : Double {
+fun longVariance(vals: Collection<Long>): Double {
     vals.average()
-    return vals.map{it - (vals.average())}.sum() / vals.size
+    return vals.map { it - (vals.average()) }.sum() / vals.size
 }
 
-fun stdDev(vals: Collection<Int>): Double{
+fun stdDev(vals: Collection<Int>): Double {
     return sqrt(variance(vals))
 }

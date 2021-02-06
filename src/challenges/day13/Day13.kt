@@ -197,7 +197,7 @@ tailrec fun lastCarLoc(carts: List<Cart>): Pair<Int, Int> {
     val crashLocsThisTick = mutableListOf<Pair<Int, Int>>()
 
     println("NEW TICK")
-    
+
     val survivingCarts = carts.sortedWith(compareBy({ it.position.second }, { it.position.first }))
         .mapNotNull { cart ->
             println(cart.position)
@@ -219,7 +219,8 @@ tailrec fun lastCarLoc(carts: List<Cart>): Pair<Int, Int> {
                 println("Car crashed into at ${cart.position}")
                 null
             }
-        }.filterNot{it.position in crashLocsThisTick} // Also filter out any carts that already moved crashed into by later carts
+        }
+        .filterNot { it.position in crashLocsThisTick } // Also filter out any carts that already moved crashed into by later carts
 
     if (survivingCarts.size == 1) {
         return survivingCarts.first().position

@@ -169,8 +169,8 @@ private fun first(): Int {
  */
 private fun second(): Int {
     val sleepiestGuardMinute = guardHistory.keys.map { guard -> Pair(guard, sleepiestMinute(guardHistory[guard]!!)) }
-        .maxBy { it.second.second }
-    return sleepiestGuardMinute!!.first * sleepiestGuardMinute!!.second!!.first
+        .maxByOrNull { it.second.second }
+    return sleepiestGuardMinute!!.first * sleepiestGuardMinute.second.first
 }
 
 fun main() {

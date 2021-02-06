@@ -44,7 +44,7 @@ val nextState: (Set<Long>) -> Set<Long> = { state ->
  */
 fun sumPlantPotsAfter(state: Set<Long>, n: Long): Long {
 
-     return repeat(state, nextState, n).sum()
+    return repeat(state, nextState, n).sum()
 }
 
 
@@ -53,10 +53,10 @@ const val CONVERGENCE_THRESHOLD = 2
 /**
  * Sums the indexes of pots after n generations for very large n
  */
-fun sumPlantPotsShortcut(state: Set<Long>, n: Long) : Long {
+fun sumPlantPotsShortcut(state: Set<Long>, n: Long): Long {
 
-    var spans = List<Long>(CONVERGENCE_THRESHOLD) {-1}
-    var variances = List(CONVERGENCE_THRESHOLD) {-1.0}
+    var spans = List<Long>(CONVERGENCE_THRESHOLD) { -1 }
+    var variances = List(CONVERGENCE_THRESHOLD) { -1.0 }
     var currentState = state
     var iters = 0
     var prevMin: Long
@@ -88,5 +88,5 @@ private fun second(): Long {
 fun main() {
     println("First solution: ${first()}")
     println("Second solution: ${second()}")
-    println(measureTimeMillis{ second() })
+    println(measureTimeMillis { second() })
 }

@@ -39,7 +39,7 @@ private fun first(): Int {
 private fun second(): Int {
     return ('A'..'Z').map { letter ->
         getConsolidatedSize(input.filterNot { it == letter || it == letter.toLowerCase() })
-    }.min()!!
+    }.minOrNull()!!
 }
 
 fun main() {

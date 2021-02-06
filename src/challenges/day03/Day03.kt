@@ -62,8 +62,8 @@ private fun first(): Int {
 private fun second(): Int {
 
     // Check the points map to ensure that every contained point is occupied by exactly one rectangle
-    rects.forEach{rect ->
-        if (rectPoints(rect).all{(pointsMap[it] == 1)}){
+    rects.forEach { rect ->
+        if (rectPoints(rect).all { (pointsMap[it] == 1) }) {
             return rect.id
         }
     }

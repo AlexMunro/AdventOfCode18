@@ -13,8 +13,8 @@ private val coordList: List<Pair<Int, Int>> = {
 }()
 
 // Define the grid we consider for this problem
-private val maxX: Int = coordList.map { it.first }.max()!! + 1000
-private val maxY: Int = coordList.map { it.second }.max()!! + 1000
+private val maxX: Int = coordList.map { it.first }.maxOrNull()!! + 1000
+private val maxY: Int = coordList.map { it.second }.maxOrNull()!! + 1000
 
 fun manhattanDist(p1: Pair<Int, Int>, p2: Pair<Int, Int>): Int =
     Math.abs(p1.first - p2.first) + Math.abs(p1.second - p2.second)
@@ -57,7 +57,7 @@ private fun first(): Int {
         (1 until maxY).mapNotNull { y ->
             closestCoord(Pair(x, y))
         }.filterNot { it in infiniteIndexes }
-    }.groupingBy { it }.eachCount().maxBy { it.value }!!.value
+    }.groupingBy { it }.eachCount().maxByOrNull { it.value }!!.value
 }
 
 /**

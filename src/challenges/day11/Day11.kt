@@ -36,17 +36,17 @@ fun gridPower(x: Int, y: Int, size: Int): Int {
     if (size == 1) {
         return cellPowerMap[Pair(x, y)]!!
     }
-    if (gridPowerMap[Triple(x, y, size)] != null){
-        return gridPowerMap[Triple(x,y,size)]!!
+    if (gridPowerMap[Triple(x, y, size)] != null) {
+        return gridPowerMap[Triple(x, y, size)]!!
     }
 
-    val power = gridPower(x, y, size-1) +
-            (x until (x + size-1)).map{Pair(it, (y+size-1))}
-                .union((y until (y + size - 1)).map{Pair((x+size-1), it)}).plus(Pair(x + size - 1, y + size - 1))
-                .map{(x,y) -> cellPowerMap[Pair(x,y)]!!}.sum().also{gridPowerMap[Triple(x,y,size)] = it}
+    val power = gridPower(x, y, size - 1) +
+            (x until (x + size - 1)).map { Pair(it, (y + size - 1)) }
+                .union((y until (y + size - 1)).map { Pair((x + size - 1), it) }).plus(Pair(x + size - 1, y + size - 1))
+                .map { (x, y) -> cellPowerMap[Pair(x, y)]!! }.sum().also { gridPowerMap[Triple(x, y, size)] = it }
 
 
-    gridPowerMap[Triple(x,y,size)] = power
+    gridPowerMap[Triple(x, y, size)] = power
 
     return power
 }
@@ -64,13 +64,13 @@ private fun first(): Pair<Int, Int> {
  */
 private fun second(): Triple<Int, Int, Int> {
 
-    println(gridPower(233,187,13))
+    println(gridPower(233, 187, 13))
 
     return grid(1, SIZE, 1, SIZE)
         .flatMap { (x, y) -> (1..SIZE).map { size -> Triple(x, y, size) } }
         .filter { (x, y, size) -> (x + size - 1 <= SIZE) && (y + size - 1 <= SIZE) }
-        .groupBy{(x,y,size) -> gridPower(x,y,size)}
-        .maxBy{it.key}!!.value.first()
+        .groupBy { (x, y, size) -> gridPower(x, y, size) }
+        .maxBy { it.key }!!.value.first()
 
 }
 
