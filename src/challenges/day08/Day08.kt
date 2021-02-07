@@ -11,13 +11,10 @@ import utils.importDataStr
  *     - 1+ metadata entries
  */
 
-private val input = importDataStr(8)[0].split(" ").map { it.toInt() }
-
 /**
  * Sub-graph of a single node and all its descendants
  */
 class Node(representation: List<Int>) {
-
     private val children: List<Node>
     private val metadata: List<Int>
     private val length: Int
@@ -38,7 +35,7 @@ class Node(representation: List<Int>) {
         length = currentLength
     }
 
-    fun sumMetaData(): Int = metadata.sum() + children.map { it.sumMetaData() }.sum()
+    fun sumMetadata(): Int = metadata.sum() + children.map { it.sumMetadata() }.sum()
 
     fun value(): Int {
         return if (children.isEmpty()) {
@@ -51,17 +48,13 @@ class Node(representation: List<Int>) {
 
 }
 
-val graph = Node(input)
+fun sumMetadata(file: List<Int>): Int = Node(file).sumMetadata()
 
-private fun first(): Int {
-    return graph.sumMetaData()
-}
-
-private fun second(): Int {
-    return graph.value()
-}
+fun rootValue(file: List<Int>): Int = Node(file).value()
 
 fun main() {
-    println("First solution: ${first()}")
-    println("Second solution: ${second()}")
+    val input = importDataStr(8)[0].split(" ").map { it.toInt() }
+
+    println("First solution: ${sumMetadata(input)}")
+    println("Second solution: ${rootValue(input)}")
 }

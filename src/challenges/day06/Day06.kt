@@ -1,61 +1,57 @@
 package challenges.day06
 
 import utils.importDataStr
+import kotlin.math.abs
 
-private val input = importDataStr(6)
-
-private val coordList: List<Pair<Int, Int>> = {
-    val regex = Regex("^(\\d*), (\\d*)\$")
-    input.map {
+private fun parseCoords(coords: List<String>): List<Pair<Int, Int>> {
+    val regex = Regex("""^(\d*), (\d*)$""")
+    return coords.map {
         val matchedGroups = regex.find(it)!!.groups
         Pair(matchedGroups[1]!!.value.toInt(), matchedGroups[2]!!.value.toInt())
     }
-}()
+}
 
 // Define the grid we consider for this problem
-private val maxX: Int = coordList.map { it.first }.maxOrNull()!! + 1000
-private val maxY: Int = coordList.map { it.second }.maxOrNull()!! + 1000
+fun maxX(coords: List<Pair<Int, Int>>): Int = coords.maxByOrNull { it.first }!!.first + 1000
+fun maxY(coords: List<Pair<Int, Int>>): Int = coords.maxByOrNull { it.second }!!.second + 1000
 
 fun manhattanDist(p1: Pair<Int, Int>, p2: Pair<Int, Int>): Int =
-    Math.abs(p1.first - p2.first) + Math.abs(p1.second - p2.second)
+    abs(p1.first - p2.first) + abs(p1.second - p2.second)
 
 /**
  * Returns the index of the closest co-ordinate only if there is no tie between co-ordinates
  */
-fun closestCoord(p: Pair<Int, Int>): Int? {
-    val closestPoints =
-        (0 until coordList.size).map { Pair(it, manhattanDist(p, coordList[it])) }.sortedBy { it.second }
+fun closestCoord(p: Pair<Int, Int>, coords: List<Pair<Int, Int>>): Int? {
+    val closestPoints = coords.indices.map { Pair(it, manhattanDist(p, coords[it])) }.sortedBy { it.second }
     return if (closestPoints[0].second != closestPoints[1].second) closestPoints[0].first else null
 }
 
-fun closerToAllThan(p: Pair<Int, Int>, threshold: Int): Boolean {
-    return coordList.sumBy { manhattanDist(it, p) } < threshold
-}
+fun closerToAllThan(p: Pair<Int, Int>, threshold: Int, coords: List<Pair<Int, Int>>) =
+    coords.sumBy { manhattanDist(it, p) } < threshold
 
-private fun first(): Int {
+fun largestArea(coordStrings: List<String>): Int {
+    val coords = parseCoords(coordStrings)
+    val maxX = maxX(coords)
+    val maxY = maxY(coords)
 
-    // Begin by checking for infinite values that have closest values at the outside
+    // Check for infinite values that have closest values at the outside
     val infiniteIndexes = HashSet<Int>()
 
     // min/max x
-    infiniteIndexes.addAll(arrayOf(0, maxX).flatMap { x ->
-        (0..maxY).mapNotNull { y ->
-            closestCoord(Pair(x, y))
-        }
+    infiniteIndexes.addAll(arrayOf(0, maxX(coords)).flatMap { x ->
+        (0..maxY).mapNotNull { y -> closestCoord(Pair(x, y), coords) }
     })
 
     // min/max y
     infiniteIndexes.addAll((0..maxX).flatMap { x ->
-        arrayOf(0, maxY).mapNotNull { y ->
-            closestCoord(Pair(x, y))
-        }
+        arrayOf(0, maxY).mapNotNull { y -> closestCoord(Pair(x, y), coords) }
     })
 
     // Calculate the nearest co-ordinate for all points within (1,1) -> (maxX-1, maxY-1), returning the most common index
 
     return (1 until maxX).flatMap { x ->
         (1 until maxY).mapNotNull { y ->
-            closestCoord(Pair(x, y))
+            closestCoord(Pair(x, y), coords)
         }.filterNot { it in infiniteIndexes }
     }.groupingBy { it }.eachCount().maxByOrNull { it.value }!!.value
 }
@@ -63,21 +59,21 @@ private fun first(): Int {
 /**
  * Number of points that have a summed distance from all co-ordinates of less than a threshold
  */
-private fun second(): Int {
-
-    // Start at negative threshold to ensure such values are included even thought all co-ords are positive
-
-    val threshold = 10000
+fun closePoints(coordStrings: List<String>, threshold: Int): Int {
+    val coords = parseCoords(coordStrings)
+    val maxX = maxX(coords)
+    val maxY = maxY(coords)
 
     return (-threshold..maxX).flatMap { x ->
         (-threshold..maxY).map { y ->
-            closerToAllThan(Pair(x, y), threshold)
+            closerToAllThan(Pair(x, y), threshold, coords)
         }.filter { it }
     }.size
-
 }
 
 fun main() {
-    println("First solution: ${first()}")
-    println("Second solution: ${second()}")
+    val input = importDataStr(6)
+
+    println("First solution: ${largestArea(input)}")
+    println("Second solution: ${closePoints(input, 10000)}")
 }

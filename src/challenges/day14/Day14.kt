@@ -3,8 +3,6 @@ package challenges.day14
 import utils.importDataSingleInt
 import java.lang.Character.getNumericValue
 
-private val input = importDataSingleInt(14)
-
 val initialRecipes = listOf(3, 7)
 
 fun newRecipes(recipes: Pair<Int, Int>): List<Int> =
@@ -28,10 +26,13 @@ fun firstNRecipes(n: Int): List<Int> {
 }
 
 fun getScore(recipes: List<Int>, length: Int): Int =
-    Integer.parseInt(recipes.takeLast(length).joinToString("") { Integer.toString(it) })
+    Integer.parseInt(recipes.takeLast(length).joinToString("") { it.toString() })
+
+
+fun next10Scores(recipeNumber: Int): String =
+    firstNRecipes(recipeNumber + 10).takeLast(10).joinToString("") { it.toString() }
 
 fun scoresUntil(n: Int, scoreLength: Int): Int {
-
     val recipes = arrayListOf<Int>()
     recipes.addAll(initialRecipes)
 
@@ -39,7 +40,6 @@ fun scoresUntil(n: Int, scoreLength: Int): Int {
     var secondElf = 1
 
     while (true) {
-
         val newRecipes = newRecipes(Pair(recipes[firstElf], recipes[secondElf]))
         for (recipe in newRecipes) {
             recipes.add(recipe)
@@ -52,20 +52,12 @@ fun scoresUntil(n: Int, scoreLength: Int): Int {
         }
         firstElf = (firstElf + 1 + recipes[firstElf]) % recipes.size
         secondElf = (secondElf + 1 + recipes[secondElf]) % recipes.size
-
     }
-
-}
-
-private fun first(): String { // Should technically convert it to long, but the output will look the same
-    return firstNRecipes(input + 10).takeLast(10).joinToString("") { Integer.toString(it) }
-}
-
-private fun second(): Int {
-    return scoresUntil(input, 6)
 }
 
 fun main() {
-    println("First solution: ${first()}")
-    println("Second solution: ${second()}")
+    val recipeNumber = importDataSingleInt(14)
+
+    println("First solution: ${next10Scores(recipeNumber)}")
+    println("Second solution: ${scoresUntil(recipeNumber, 6)}")
 }

@@ -16,14 +16,13 @@ data class GuardEvent(val dateTime: LocalDateTime, val asleep: Boolean) : Compar
 data class GuardDate(var guardId: Int = -1, val events: ArrayList<GuardEvent> = ArrayList())
 
 // Begin by building sorted lists of each day's events
-private val eventsByDay = {
+fun eventsByDay(guardLog: List<String>): MutableCollection<GuardDate> {
     val dayMap = HashMap<LocalDate, GuardDate>()
-    val input = importDataStr(4)
     // First for date, second for time, third for the event contents
-    val timestampRegex = Regex("\\[(\\d{4}\\-\\d{2}\\-\\d{2}) (\\d{2}\\:\\d{2})\\] (.*)")
-    val guardIdRegex = Regex("Guard \\#(\\d*) begins shift")
+    val timestampRegex = Regex("""\[(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})] (.*)""")
+    val guardIdRegex = Regex("""Guard #(\d*) begins shift""")
 
-    for (event in input) {
+    for (event in guardLog) {
         // Sort each event by shift
         val matchedGroups = timestampRegex.find(event)!!.groups
 
@@ -48,16 +47,16 @@ private val eventsByDay = {
     dayMap.values.forEach { it.events.sort() }
 
     // Returning only the values since dates are not relevant beyond grouping
-    dayMap.values
-}()
+    return dayMap.values
+}
 
 // Then group days by guard ID
-private val guardHistory = eventsByDay.groupBy { it.guardId }
+fun parseSleepLog(guardLog: List<String>) = eventsByDay(guardLog).groupBy { it.guardId }
 
 /**
  * Checks if on a given day the guard has already fallen asleep
  */
-private fun asleepAtMidnight(date: GuardDate): Boolean {
+fun asleepAtMidnight(date: GuardDate): Boolean {
     // Determine whether awake from 23:59 the previous night
     val beforeMidnight = date.events.takeWhile { it.dateTime.hour == 23 }
     return if (beforeMidnight.isEmpty()) false else !beforeMidnight.last().asleep
@@ -66,8 +65,7 @@ private fun asleepAtMidnight(date: GuardDate): Boolean {
 /**
  * Returns total number of minutes the guard was asleep for on a particular day
  */
-private fun midnightMinsAsleep(date: GuardDate): Int {
-
+fun midnightMinsAsleep(date: GuardDate): Int {
     var asleep = asleepAtMidnight(date)
 
     var minutesAsleep = 0
@@ -96,8 +94,7 @@ private fun midnightMinsAsleep(date: GuardDate): Int {
 /**
  * Finds which moment was most often slept for. Returns the first such minute if there is a tie with its probability
  */
-private fun sleepiestMinute(dates: List<GuardDate>): Pair<Int, Double> {
-
+fun sleepiestMinute(dates: List<GuardDate>): Pair<Int, Double> {
     val sleepProbabilities = HashMap<Int, Double>()
 
     // Iterate through each minute of each date and increase the recorded probability by 1/N when asleep
@@ -145,14 +142,13 @@ private fun sleepiestMinute(dates: List<GuardDate>): Pair<Int, Double> {
 /**
  * Returns the ID of the guard who sleeps the most multiplied by the minute of the midnight hour they sleep most for
  */
-private fun first(): Int {
-
-    // Find the guard who has slept the longest
+fun sleepiestGuard(sleepLog: List<String>): Int {
+    val history = parseSleepLog(sleepLog)
 
     var sleepiestGuardId = -1
     var mostMinutesSlept = -1
 
-    for ((guardId, dates) in guardHistory) {
+    for ((guardId, dates) in history) {
         val sleepAmount = dates.map { midnightMinsAsleep(it) }.sum()
         if (sleepAmount > mostMinutesSlept) {
             mostMinutesSlept = sleepAmount
@@ -161,19 +157,23 @@ private fun first(): Int {
     }
 
     // Return the minute that guard is most often asleep multiplied by their ID
-    return sleepiestMinute(guardHistory[sleepiestGuardId]!!).first * sleepiestGuardId
+    return sleepiestMinute(history[sleepiestGuardId]!!).first * sleepiestGuardId
 }
 
 /**
  * Returns the ID of the guard who sleeps most on a particular minute multiplied by that minute of the midnight hour
  */
-private fun second(): Int {
-    val sleepiestGuardMinute = guardHistory.keys.map { guard -> Pair(guard, sleepiestMinute(guardHistory[guard]!!)) }
+fun sleepiestMinuteProduct(sleepLog: List<String>): Int {
+    val sleepiestGuardMinute = parseSleepLog(sleepLog)
+        .keys
+        .map { guard -> Pair(guard, sleepiestMinute(parseSleepLog(sleepLog)[guard]!!)) }
         .maxByOrNull { it.second.second }
     return sleepiestGuardMinute!!.first * sleepiestGuardMinute.second.first
 }
 
 fun main() {
-    println("First solution: ${first()}")
-    println("Second solution: ${second()}")
+    val input = importDataStr(4)
+
+    println("First solution: ${sleepiestGuard(input)}")
+    println("Second solution: ${sleepiestMinuteProduct(input)}")
 }

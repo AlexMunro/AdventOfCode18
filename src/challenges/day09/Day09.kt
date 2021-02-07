@@ -3,16 +3,11 @@ package challenges.day09
 import utils.doublyLinkedListOf
 import utils.importDataStr
 
-val regexRead = {
-
-    val input = importDataStr(9)[0]
+fun regexRead(input: String): Pair<Int, Int> {
     val regex = Regex("(\\d*) players; last marble is worth (\\d*) points")
     val groups = regex.find(input)!!.groups
-    Pair(groups[1]!!.value.toInt(), groups[2]!!.value.toInt())
-}()
-
-val playerCount = regexRead.first
-val finalMarbleScore = regexRead.second
+    return Pair(groups[1]!!.value.toInt(), groups[2]!!.value.toInt())
+}
 
 /**
  * Goes through a game with given number of player and turns, returning the maximum score
@@ -35,19 +30,22 @@ fun getMaxScore(players: Int, turns: Int): Long {
         currentPlayer = (currentPlayer + 1) % players
     }
 
-    return scoreMap.values.max()!!
+    return scoreMap.values.maxOrNull()!!
 }
 
-private fun first(): Long {
+fun maxScore(summary: String): Long {
+    val (playerCount, finalMarbleScore) = regexRead(summary)
     return getMaxScore(playerCount, finalMarbleScore)
 }
 
-private fun second(): Long {
+fun maxScoreEmbiggened(summary: String): Long {
+    val (playerCount, finalMarbleScore) = regexRead(summary)
     return getMaxScore(playerCount, finalMarbleScore * 100)
 }
 
 
 fun main() {
-    println("First solution: ${first()}")
-    println("Second solution: ${second()}")
+    val input = importDataStr(9)[0]
+    println("First solution: ${maxScore(input)}")
+    println("Second solution: ${maxScoreEmbiggened(input)}")
 }
